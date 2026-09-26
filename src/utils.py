@@ -7,6 +7,7 @@ import dill
 import pickle
 
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GridSearchCV
 from src.logger import logging
 from src.exceptions import CustomException
 
@@ -31,17 +32,24 @@ def save_object(file_path, obj):
 
 
 # to evaluate multiple models and return their performance scores
-def evaluate_models(X_train, y_train, X_test, y_test, models):
+def evaluate_models(X_train, y_train, X_test, y_test, models, params, cv=3, n_jobs=3, verbose=2,refit=False):
     try:
         logging.info("Entered the evaluate_models method of utils")
         report = {}
 
         for i in range(len(list(models))):
             model = list(models.values())[i]
+            param = params.get(list(models.keys())[i], {})
             model_name = list(models.keys())[i]
 
-            # Fit the model on the training data
+            gs = GridSearchCV(model, param, cv=cv, n_jobs=n_jobs, verbose=verbose, refit=refit)
+            gs.fit(X_train, y_train)
+
+            model.set_params(**gs.best_params_)
             model.fit(X_train, y_train)
+
+            # Fit the model on the training data
+            #model.fit(X_train, y_train)
 
             #predict on the training data
             y_train_pred = model.predict(X_train)
@@ -55,6 +63,9 @@ def evaluate_models(X_train, y_train, X_test, y_test, models):
             test_model_score = r2_score(y_test, y_test_pred)
 
             report[model_name] = test_model_score
+            print(f"{model_name} has been trained and evaluated. Train R2 score: {train_model_score}, Test R2 score: {test_model_score}")
+            print("------------------------------------------------------------")
+            print(f"Best parameters for {model_name}: {gs.best_params_}")
 
         logging.info("Model evaluation completed successfully")
         return report
