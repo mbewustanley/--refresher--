@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 
 from src.components.data_transformation import DataTransformationConfig, DataTransformation
-
+from src.components.model_trainer import ModelTrainerConfig, ModelTrainer
 
 @dataclass # this decorator is used to automatically generate special methods like
 #__init__() and __repr__() for the class based on the defined attributes.
@@ -58,11 +58,14 @@ class DataIngestion:
         except Exception as e:
             raise CustomException(e, sys)
 
-"""
+
 # to test
 if __name__ == "__main__":
     obj = DataIngestion()
     train_path, test_path = obj.initiate_data_ingestion()
 
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_path, test_path)"""
+    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_path, test_path)
+
+    model_trainer = ModelTrainer()
+    print(model_trainer.initiate_model_trainer(train_arr, test_arr, preprocessor_path=data_transformation.data_transformation_config.preprocessor_obj_file_path))
