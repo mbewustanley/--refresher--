@@ -1,0 +1,531 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Exam Performance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        /* ---------- MAIN CONTAINER ---------- */
+
+        .login {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* ---------- HEADER ---------- */
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: #eef0ff;
+            color: #5363d6;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 18px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            letter-spacing: -1.5px;
+            margin-bottom: 12px;
+        }
+
+        .page-header p {
+            color: #667085;
+            font-size: 0.98rem;
+            line-height: 1.7;
+        }
+
+        /* ---------- FORM CARD ---------- */
+
+        form {
+            background: #ffffff;
+            border: 1px solid #e7eaf1;
+            border-radius: 22px;
+            padding: 42px;
+            box-shadow: 0 20px 50px rgba(25, 35, 60, 0.08);
+        }
+
+        .form-title {
+            margin-bottom: 30px;
+        }
+
+        .form-title h2 {
+            font-size: 1.35rem;
+            margin-bottom: 7px;
+        }
+
+        .form-title p {
+            color: #98a2b3;
+            font-size: 0.88rem;
+        }
+
+        /* ---------- FORM GROUPS ---------- */
+
+        .mb-3 {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #344054;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px;
+            border: 1px solid #d9dee8;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 0.93rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:hover {
+            border-color: #b8c0d2;
+        }
+
+        .form-control:focus {
+            border-color: #5b6ee1;
+            box-shadow: 0 0 0 4px rgba(91, 110, 225, 0.10);
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+
+        input::placeholder {
+            color: #98a2b3;
+        }
+
+        /* ---------- SUBMIT BUTTON ---------- */
+
+        .submit-container {
+            margin-top: 30px;
+            margin-bottom: 0;
+        }
+
+        .btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 11px;
+            background: #5b6ee1;
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(91, 110, 225, 0.20);
+        }
+
+        .btn:hover {
+            background: #4b5dcc;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(91, 110, 225, 0.25);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* ---------- RESULT ---------- */
+
+        .result {
+            margin-top: 25px;
+            padding: 24px;
+            border-radius: 16px;
+            background: #172033;
+            color: #ffffff;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(25, 35, 60, 0.12);
+        }
+
+        .result-label {
+            color: #b9c0cf;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .result-score {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* ---------- FOOTER ---------- */
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #98a2b3;
+            font-size: 0.8rem;
+        }
+
+        /* ---------- MOBILE ---------- */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 35px 15px;
+            }
+
+            form {
+                padding: 28px 22px;
+                border-radius: 18px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="login">
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <div class="badge">
+                MACHINE LEARNING PREDICTION
+            </div>
+
+            <h1>
+                Student Exam Performance
+            </h1>
+
+            <p>
+                Enter the student's information below to estimate their
+                mathematics examination score.
+            </p>
+
+        </div>
+
+
+        <!-- PREDICTION FORM -->
+
+        <form action="{{ url_for('predict_datapoint')}}" method="post">
+
+            <div class="form-title">
+
+                <h2>
+                    Student Information
+                </h2>
+
+                <p>
+                    Provide the following details to generate a prediction.
+                </p>
+
+            </div>
+
+
+            <!-- Gender -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Gender
+                </label>
+
+                <select class="form-control"
+                        name="gender"
+                        placeholder="Enter you Gender"
+                        required>
+
+                    <option class="placeholder"
+                            selected
+                            disabled
+                            value="">
+                        Select your Gender
+                    </option>
+
+                    <option value="male">
+                        Male
+                    </option>
+
+                    <option value="female">
+                        Female
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Ethnicity -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Race or Ethnicity
+                </label>
+
+                <select class="form-control"
+                        name="ethnicity"
+                        placeholder="Enter you ethnicity"
+                        required>
+
+                    <option class="placeholder"
+                            selected
+                            disabled
+                            value="">
+                        Select Ethnicity
+                    </option>
+
+                    <option value="group A">
+                        Group A
+                    </option>
+
+                    <option value="group B">
+                        Group B
+                    </option>
+
+                    <option value="group C">
+                        Group C
+                    </option>
+
+                    <option value="group D">
+                        Group D
+                    </option>
+
+                    <option value="group E">
+                        Group E
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Parental Education -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Parental Level of Education
+                </label>
+
+                <select class="form-control"
+                        name="parental_level_of_education"
+                        placeholder="Enter you Parent Education"
+                        required>
+
+                    <option class="placeholder"
+                            selected
+                            disabled
+                            value="">
+                        Select Parent Education
+                    </option>
+
+                    <option value="associate's degree">
+                        associate's degree
+                    </option>
+
+                    <option value="bachelor's degree">
+                        bachelor's degree
+                    </option>
+
+                    <option value="high school">
+                        high school
+                    </option>
+
+                    <option value="master's degree">
+                        master's degree
+                    </option>
+
+                    <option value="some college">
+                        some college
+                    </option>
+
+                    <option value="some high school">
+                        some high school
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Lunch -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Lunch Type
+                </label>
+
+                <select class="form-control"
+                        name="lunch"
+                        placeholder="Enter you Lunch"
+                        required>
+
+                    <option class="placeholder"
+                            selected
+                            disabled
+                            value="">
+                        Select Lunch Type
+                    </option>
+
+                    <option value="free/reduced">
+                        Free / Reduced
+                    </option>
+
+                    <option value="standard">
+                        Standard
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Test Preparation -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Test Preparation Course
+                </label>
+
+                <select class="form-control"
+                        name="test_preparation_course"
+                        placeholder="Enter you Course"
+                        required>
+
+                    <option class="placeholder"
+                            selected
+                            disabled
+                            value="">
+                        Select Test Course
+                    </option>
+
+                    <option value="none">
+                        None
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Writing Score -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Writing Score out of 100
+                </label>
+
+                <input class="form-control"
+                       type="number"
+                       name="reading_score"
+                       placeholder="Enter your Reading score"
+                       min="0"
+                       max="100" />
+
+            </div>
+
+
+            <!-- Reading Score -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Reading Score out of 100
+                </label>
+
+                <input class="form-control"
+                       type="number"
+                       name="writing_score"
+                       placeholder="Enter your Reading Score"
+                       min="0"
+                       max="100" />
+
+            </div>
+
+
+            <!-- Submit -->
+
+            <div class="mb-3 submit-container">
+
+                <input class="btn btn-primary"
+                       type="submit"
+                       value="Predict your Maths Score"
+                       required />
+
+            </div>
+
+        </form>
+
+
+        <!-- RESULT -->
+
+        {% if results %}
+
+        <div class="result">
+
+            <div class="result-label">
+                Predicted Mathematics Score
+            </div>
+
+            <div class="result-score">
+                {{ results }}
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <footer>
+            Powered by Machine Learning · Student Performance Prediction
+        </footer>
+
+    </div>
+
+</body>
+
+</html>
+```
